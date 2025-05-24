@@ -1,5 +1,5 @@
-import { Board } from './components/Board';
-import { GameMasterControls } from './components/GameMasterControls';
+import {Board} from './components/Board';
+import {GameMasterControls} from './components/GameMasterControls';
 import {useEffect, useState} from 'react';
 import {ladders, snakes} from "./data/snakesAndLadders.ts";
 
@@ -11,9 +11,12 @@ export type Piece = {
 };
 
 export default function App() {
-    const [pieces, setPieces] = useState<Piece[]>([]);
+    const [pieces, setPieces] = useState<Piece[]>(() => {
+        const stored = localStorage.getItem('pieces');
+        return stored ? JSON.parse(stored) : [];
+    });
 
-    const movePiece = (id: number, points: number) => {
+    const handleMovePiece = (id: number, points: number) => {
         setPieces((prev) =>
             prev.map((piece) => {
                 if (piece.id !== id) return piece;
@@ -24,8 +27,8 @@ export default function App() {
 
                 // Check if passed over any star fields
                 const range = points > 0
-                    ? Array.from({ length: newPosition - oldPosition + 1 }, (_, i) => oldPosition + i)
-                    : Array.from({ length: oldPosition - newPosition + 1 }, (_, i) => oldPosition - i);
+                    ? Array.from({length: newPosition - oldPosition + 1}, (_, i) => oldPosition + i)
+                    : Array.from({length: oldPosition - newPosition + 1}, (_, i) => oldPosition - i);
 
                 for (const pos of range) {
                     if (starTiles.includes(pos)) {
@@ -36,21 +39,23 @@ export default function App() {
 
                 newPosition = applySnakesAndLadders(newPosition);
 
-                return { ...piece, position: newPosition };
+                return {...piece, position: newPosition};
             })
         );
     };
 
-
-
-    const addPiece = (name: string, color: string) => {
+    const handleAddPiece = (name: string, color: string) => {
         const newId = Math.max(0, ...pieces.map((p) => p.id)) + 1;
-        setPieces((prev) => [...prev, { id: newId, name, position: 1, color }]);
+        setPieces((prev) => [...prev, {id: newId, name, position: 1, color}]);
     };
 
     useEffect(() => {
+        localStorage.setItem('pieces', JSON.stringify(pieces));
+    }, [pieces]);
+
+    useEffect(() => {
         const handler = (e: any) => {
-            const { pieceId, targetTile } = e.detail;
+            const {pieceId, targetTile} = e.detail;
             setPieces((prev) =>
                 prev.map((piece) => {
                     if (piece.id !== pieceId) return piece;
@@ -60,7 +65,7 @@ export default function App() {
                     }
 
                     const finalTile = applySnakesAndLadders(targetTile);
-                    return { ...piece, position: finalTile };
+                    return {...piece, position: finalTile};
                 })
             );
         };
@@ -69,30 +74,38 @@ export default function App() {
         return () => window.removeEventListener('pieceMove', handler);
     }, []);
 
-    const [starTiles, setStarTiles] = useState<number[]>([5, 23, 32, 37, 59, 88, 96]);
+    const [starTiles, setStarTiles] = useState<number[]>(() => {
+        const stored = localStorage.getItem('starTiles');
+        return stored ? JSON.parse(stored) : [];
+    });
 
     useEffect(() => {
-        const stars: number[] = [];
-        while (stars.length < 12) {
-            const randomTile = Math.floor(Math.random() * 99) + 2; // avoid 1 and 100
-            if (!stars.includes(randomTile)) {
-                stars.push(randomTile);
-            }
-        }
-        setStarTiles(stars);
-    }, []);
+        localStorage.setItem('starTiles', JSON.stringify(starTiles));
+    }, [starTiles]);
+
+    const handleAddStars = (tiles: number[]) => {
+        setStarTiles([...starTiles, ...tiles].sort((a, b) => a - b));
+    };
+    const handleReplaceStars = (tiles: number[]) => setStarTiles(tiles.sort((a, b) => a - b));
+
+    const handleClearAllStars = () => setStarTiles([]);
 
 
     return (
         <div className="flex h-screen">
             <div className="flex-grow flex items-center justify-center bg-gray-100 p-2">
-                <Board pieces={pieces} starTiles={starTiles} />
+                <Board pieces={pieces} starTiles={starTiles}/>
             </div>
             <div className="w-80 border-l border-gray-300 p-2 bg-white">
                 <GameMasterControls
                     pieces={pieces}
-                    onMove={movePiece}
-                    onAddPiece={addPiece}
+                    onMove={handleMovePiece}
+                    onAddPiece={handleAddPiece}
+                    onAddStars={handleAddStars}
+                    onReplaceStars={handleReplaceStars}
+                    starTiles={starTiles}
+                    onRemoveStar={(tile) => setStarTiles(starTiles.filter((t) => t !== tile))}
+                    onClearAllStars={handleClearAllStars}
                 />
             </div>
         </div>
