@@ -90,6 +90,12 @@ export default function App() {
 
     const handleClearAllStars = () => setStarTiles([]);
 
+    const handleResetTeams = () => {
+        const confirmed = window.confirm('Biztos, hogy véglegesen törlöd az összes csapatot?');
+        if (confirmed) {
+            setPieces([]);
+        }
+    };
 
     return (
         <div className="flex h-screen">
@@ -106,6 +112,7 @@ export default function App() {
                     starTiles={starTiles}
                     onRemoveStar={(tile) => setStarTiles(starTiles.filter((t) => t !== tile))}
                     onClearAllStars={handleClearAllStars}
+                    onResetTeams={handleResetTeams}
                 />
             </div>
         </div>

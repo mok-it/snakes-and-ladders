@@ -1,5 +1,5 @@
 import {useRef, useState} from 'react';
-import {FaDice, FaPlus} from 'react-icons/fa';
+import {FaChevronDown, FaChevronUp, FaDice, FaPlus} from 'react-icons/fa';
 
 function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -19,6 +19,7 @@ type GameMasterControlsProps = {
     starTiles: number[];
     onRemoveStar: (tile: number) => void;
     onClearAllStars: () => void;
+    onResetTeams: () => void;
 };
 
 export function GameMasterControls({
@@ -30,6 +31,7 @@ export function GameMasterControls({
                                        starTiles,
                                        onRemoveStar,
                                        onClearAllStars,
+                                       onResetTeams
                                    }: GameMasterControlsProps) {
     const [selectedPieceId, setSelectedPieceId] = useState<number>(pieces[0]?.id ?? 1);
     const [pointsInput, setPointsInput] = useState<string>("1");
@@ -78,7 +80,7 @@ export function GameMasterControls({
                         className="text-sm text-blue-600 hover:underline"
                         onClick={() => setShowStarAdder((prev) => !prev)}
                     >
-                        {showStarAdder ? 'Bezár' : 'Megnyit'}
+                        {showStarAdder ? <FaChevronUp/> : <FaChevronDown/>}
                     </button>
                 </div>
 
@@ -193,6 +195,11 @@ export function GameMasterControls({
                     className="bg-green-500 hover:bg-green-600 text-white py-2 rounded w-full"
                     onClick={handleAddPiece}
                 >Hozzáad
+                </button>
+                <button
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 mt-2 rounded w-full"
+                    onClick={onResetTeams}
+                >Összes csapat és bábu törlése
                 </button>
             </div>
         </div>
