@@ -3,10 +3,11 @@ import { Tile } from "./Tile";
 
 type BoardProps = {
 	pieces: Piece[];
+	selectedPieceId: number;
 	starTiles: number[];
 };
 
-export function Board({ pieces, starTiles }: BoardProps) {
+export function Board({ pieces, selectedPieceId, starTiles }: BoardProps) {
 	const tiles = [];
 
 	for (let row = 9; row >= 0; row--) {
@@ -43,6 +44,7 @@ export function Board({ pieces, starTiles }: BoardProps) {
 					key={number}
 					number={number}
 					pieces={pieces.filter((p) => p.position === number)}
+					selectedPieceId={selectedPieceId}
 					onDropPiece={movePieceDirectly}
 					isStar={starTiles.includes(number)}
 				/>

@@ -7,11 +7,18 @@ import type { Piece } from "../App.tsx";
 type TileProps = {
 	number: number;
 	pieces: Piece[];
+	selectedPieceId: number;
 	onDropPiece?: (pieceId: number, targetTile: number) => void;
 	isStar?: boolean;
 };
 
-export function Tile({ number, pieces, onDropPiece, isStar }: TileProps) {
+export function Tile({
+	number,
+	pieces,
+	selectedPieceId,
+	onDropPiece,
+	isStar,
+}: TileProps) {
 	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
 		e.preventDefault();
 		const pieceId = Number(e.dataTransfer.getData("text/plain"));
@@ -49,6 +56,7 @@ export function Tile({ number, pieces, onDropPiece, isStar }: TileProps) {
 				const offsetX = Math.cos(angle) * offset;
 				const offsetY = Math.sin(angle) * offset;
 
+				console.log({ selectedPieceId });
 				return (
 					<div
 						key={piece.id}
@@ -64,7 +72,12 @@ export function Tile({ number, pieces, onDropPiece, isStar }: TileProps) {
 						}}
 					>
 						{/* Hover label for team name */}
-						<div className="absolute left-1/2 -translate-x-1/2 -top-1 translate-y-[-100%] px-2 py-0.5 rounded text-xs font-medium bg-black/80 text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap drop-shadow z-50">
+						<div
+							className={
+								"absolute left-1/2 -translate-x-1/2 -top-1 translate-y-[-100%] px-2 py-0.5 rounded text-xs font-medium bg-black/80 text-white group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap drop-shadow z-50 " +
+								(selectedPieceId !== piece.id ? "opacity-0" : "")
+							}
+						>
 							{piece.name}
 						</div>
 						<svg

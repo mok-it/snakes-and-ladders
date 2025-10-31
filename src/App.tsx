@@ -18,6 +18,8 @@ export default function App() {
 		return stored ? JSON.parse(stored) : [];
 	});
 
+	const [selectedPieceId, setSelectedPieceId] = useState<number>(-1);
+
 	const handleMovePiece = (id: number, points: number) => {
 		setPieces((prev) =>
 			prev.map((piece) => {
@@ -26,6 +28,7 @@ export default function App() {
 				const oldPosition = piece.position;
 				let newPosition = oldPosition + points;
 				if (newPosition > 100) newPosition = 100;
+				if (newPosition < 1) newPosition = 1;
 
 				// Check if passed over any star fields in case of regular movement (ie not dnd)
 				const range =
@@ -128,7 +131,11 @@ export default function App() {
 	return (
 		<div className="flex flex-col md:flex-row h-screen">
 			<div className="flex-grow flex items-center justify-center bg-gray-100 p-2">
-				<Board pieces={pieces} starTiles={starTiles} />
+				<Board
+					pieces={pieces}
+					starTiles={starTiles}
+					selectedPieceId={selectedPieceId}
+				/>
 			</div>
 			<div className="w-full md:max-w-80 border-l border-gray-300 p-2 bg-white">
 				<GameMasterControls
@@ -137,6 +144,7 @@ export default function App() {
 					onAddPiece={handleAddPiece}
 					onEditPiece={handleEditPiece}
 					onRemovePiece={handleRemovePiece}
+					onSelectPiece={(id) => setSelectedPieceId(id)}
 					onAddStars={handleAddStars}
 					onReplaceStars={handleReplaceStars}
 					starTiles={starTiles}

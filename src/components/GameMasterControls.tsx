@@ -26,6 +26,7 @@ type GameMasterControlsProps = {
 	onAddPiece: (name: string, color: string) => void;
 	onEditPiece: (id: number, newName: string, newColor: string) => void;
 	onRemovePiece: (id: number) => void;
+	onSelectPiece: (id: number) => void;
 	onAddStars: (tiles: number[]) => void;
 	onReplaceStars: (tiles: number[]) => void;
 	starTiles: number[];
@@ -40,6 +41,7 @@ export function GameMasterControls({
 	onAddPiece,
 	onEditPiece,
 	onRemovePiece,
+	onSelectPiece,
 	onAddStars,
 	onReplaceStars,
 	starTiles,
@@ -146,7 +148,12 @@ export function GameMasterControls({
 					formatOptionLabel={(opt) => OptionContent(opt)}
 					className="w-full mb-2"
 					value={pieceOptions.find((o) => o.value === selectedPieceId) ?? null}
-					onChange={(opt) => opt && setSelectedPieceId(opt.value)}
+					onChange={(opt) => {
+						if (opt?.value) {
+							setSelectedPieceId(opt.value);
+							onSelectPiece(opt?.value);
+						}
+					}}
 					placeholder="Válassz csapatot"
 				/>
 				<h3 className="text-md font-semibold mb-2">Mennyivel?</h3>
