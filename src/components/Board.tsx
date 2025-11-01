@@ -5,9 +5,15 @@ type BoardProps = {
 	pieces: Piece[];
 	selectedPieceId: number;
 	starTiles: number[];
+	onPieceMove?: (pieceId: number, targetTile: number) => void;
 };
 
-export function Board({ pieces, selectedPieceId, starTiles }: BoardProps) {
+export function Board({
+	pieces,
+	selectedPieceId,
+	starTiles,
+	onPieceMove,
+}: BoardProps) {
 	const tiles = [];
 
 	for (let row = 9; row >= 0; row--) {
@@ -22,13 +28,6 @@ export function Board({ pieces, selectedPieceId, starTiles }: BoardProps) {
 		}
 		tiles.push(...rowTiles);
 	}
-
-	const movePieceDirectly = (pieceId: number, targetTile: number) => {
-		const event = new CustomEvent("pieceMove", {
-			detail: { pieceId, targetTile },
-		});
-		window.dispatchEvent(event);
-	};
 
 	return (
 		<div
@@ -45,7 +44,7 @@ export function Board({ pieces, selectedPieceId, starTiles }: BoardProps) {
 					number={number}
 					pieces={pieces.filter((p) => p.position === number)}
 					selectedPieceId={selectedPieceId}
-					onDropPiece={movePieceDirectly}
+					onDropPiece={onPieceMove}
 					isStar={starTiles.includes(number)}
 				/>
 			))}

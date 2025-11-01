@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /** biome-ignore-all lint/suspicious/noExplicitAny: explanation */
 
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
 	FaCheck,
 	FaChevronDown,
@@ -108,32 +107,27 @@ export default function App() {
 
 	const [starTiles, setStarTiles] = useLocalStorage<number[]>("starTiles", []);
 
-	useEffect(() => {
-		const handler = (e: any) => {
-			const { pieceId, targetTile } = e.detail;
-			setPieces((prev) =>
-				prev.map((piece) => {
-					if (piece.id !== pieceId) return piece;
+	const onPieceDndEnd = (pieceId: number, targetTile: number) => {
+		setPieces((prev) =>
+			prev.map((piece) => {
+				if (piece.id !== pieceId) return piece;
 
-					if (starTiles.includes(targetTile)) {
-						console.log(`⭐ ${piece.name} landed on star at ${targetTile}`);
-					}
+				if (starTiles.includes(targetTile)) {
+					//todo the app is currently not detecting the passing of a star if the move happened via drag-and-drop
+					console.log(`⭐ ${piece.name} landed on star at ${targetTile}`);
+				}
 
-					const finalTile = applySnakesAndLadders(targetTile);
+				const finalTile = applySnakesAndLadders(targetTile);
 
-					setRecentMoves((prev) => [
-						...prev,
-						{ pieceId, position: piece.position },
-					]);
+				setRecentMoves((prev) => [
+					...prev,
+					{ pieceId, position: piece.position },
+				]);
 
-					return { ...piece, position: finalTile };
-				}),
-			);
-		};
-
-		window.addEventListener("pieceMove", handler);
-		return () => window.removeEventListener("pieceMove", handler);
-	}, [starTiles, setPieces]);
+				return { ...piece, position: finalTile };
+			}),
+		);
+	};
 
 	const onAddStars = (tiles: number[]) => {
 		setStarTiles([...starTiles, ...tiles].sort((a, b) => a - b));
@@ -157,7 +151,6 @@ export default function App() {
 	const onUndoLastMove = () => {
 		const lastMove = recentMoves.pop();
 
-		console.log({ recentMoves });
 		if (lastMove) {
 			const { pieceId, position } = lastMove;
 			setPieces((prev) =>
@@ -262,6 +255,7 @@ export default function App() {
 					pieces={pieces}
 					starTiles={starTiles}
 					selectedPieceId={selectedPieceId}
+					onPieceMove={onPieceDndEnd}
 				/>
 			</div>
 			<div className="w-full md:max-w-80 border-l border-gray-300 p-2 bg-white">

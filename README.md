@@ -1,54 +1,27 @@
-# React + TypeScript + Vite
+# Snakes and ladders
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a tiny app for a camp activity. It is not a board game by itself, but it helps gamifying any existing activity. The main idea is the teams are assigned a piece on the board, and by solving excercises, they are given points to advance on the board. The first team to reach the end wins. 
 
-Currently, two official plugins are available:
+Note: everything is saved in your browser's local storage, so you won't lose your progress if you refresh the page, but nobody else using the app in the same time will see the teams, pieces, etc. on your board.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+You can use the most recent version of the app [here](https://snakes-and-ladders-mok.web.app/).
 
-## Expanding the ESLint configuration
+# Technicalities
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The app is built using the following stack: 
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- React
+- Typescript
+- Tailwind CSS
+- 
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## How to run the app locally
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Clone the repository
+2. Install dependencies with `pnpm install`
+3. Run the app with `pnpm run dev`
+4. Open [http://localhost:5173](http://localhost:5173) to view it in the browser (or whatever port you are presented with)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Contributions
+
+Feel free to open an issue or a pull request if you found anything worthwile improving. 
