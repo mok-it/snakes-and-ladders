@@ -8,6 +8,7 @@ import {
 	FaPlus,
 	FaTrash,
 } from "react-icons/fa";
+import { FaArrowRotateLeft } from "react-icons/fa6";
 import Select from "react-select";
 import type { Piece } from "../App.tsx";
 
@@ -22,6 +23,7 @@ function getRandomColor() {
 
 type GameMasterControlsProps = {
 	pieces: Piece[];
+	isUndoDisabled: boolean;
 	onMove: (id: number, points: number) => void;
 	onAddPiece: (name: string, color: string) => void;
 	onEditPiece: (id: number, newName: string, newColor: string) => void;
@@ -33,10 +35,12 @@ type GameMasterControlsProps = {
 	onRemoveStar: (tile: number) => void;
 	onClearAllStars: () => void;
 	onResetTeams: () => void;
+	onUndoLastMove: () => void;
 };
 
 export function GameMasterControls({
 	pieces,
+	isUndoDisabled,
 	onMove,
 	onAddPiece,
 	onEditPiece,
@@ -48,6 +52,7 @@ export function GameMasterControls({
 	onRemoveStar,
 	onClearAllStars,
 	onResetTeams,
+	onUndoLastMove,
 }: GameMasterControlsProps) {
 	const [selectedPieceId, setSelectedPieceId] = useState<number>(
 		pieces[0]?.id ?? 1,
@@ -81,6 +86,7 @@ export function GameMasterControls({
 			onAddPiece(editedPiece.name.trim(), editedPiece.color);
 
 			teamNameInputRef.current?.focus();
+			setEditedPiece({ id: 0, name: "", position: 0, color: getRandomColor() });
 		}
 	};
 
@@ -141,7 +147,16 @@ export function GameMasterControls({
 		<div className="flex flex-col gap-2 w-full">
 			{/*Movement*/}
 			<div className="bg-blue-200 shadow-md rounded p-2">
-				<h2 className="text-lg font-semibold mb-2">Mozgás</h2>
+				<div className="flex items-center justify-between mb-2">
+					<h2 className="text-lg font-semibold mb-2">Mozgás</h2>
+					<button
+						onClick={onUndoLastMove}
+						disabled={isUndoDisabled}
+						className="rounded-2xl p-2 bg-blue-500 hover:bg-blue-600 disabled:hover:bg-gray-400 disabled:bg-gray-400 text-white transition-colors duration-300"
+					>
+						<FaArrowRotateLeft />
+					</button>
+				</div>
 				<h3 className="text-md font-semibold mb-2">Melyik csapatot?</h3>
 				<Select<PieceOption>
 					options={pieceOptions}
@@ -165,7 +180,8 @@ export function GameMasterControls({
 					onChange={(e) => setPointsInput(e.target.value)}
 				/>
 				<button
-					className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded w-full"
+					className="bg-blue-500 hover:bg-blue-600 disabled:hover:bg-gray-400 disabled:bg-gray-400 text-white py-2 rounded w-full"
+					disabled={pieces.length === 0 || Number(pointsInput) === 0}
 					onClick={handleMove}
 				>
 					Mozgat
@@ -213,7 +229,10 @@ export function GameMasterControls({
 							/>
 							<button
 								type="button"
-								className="bg-green-500 hover:bg-green-600 text-white rounded h-12 w-12 flex items-center justify-center"
+								className="bg-green-500 hover:bg-green-600
+								disabled:bg-green-300 disabled:hover:bg-green-300
+								text-white rounded h-12 w-12 flex items-center justify-center"
+								disabled={!editedPiece.name}
 								onClick={isEditingTeam ? handleEditPiece : handleAddPiece}
 							>
 								{isEditingTeam ? (

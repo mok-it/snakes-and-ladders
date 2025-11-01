@@ -1,5 +1,5 @@
-/** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
-/** biome-ignore-all lint/a11y/noStaticElementInteractions: <explanation> */
+/** biome-ignore-all lint/a11y/noSvgWithoutTitle: feel free to add it, lol */
+/** biome-ignore-all lint/a11y/noStaticElementInteractions: like I cared */
 
 import type * as React from "react";
 import type { Piece } from "../App.tsx";
@@ -56,7 +56,6 @@ export function Tile({
 				const offsetX = Math.cos(angle) * offset;
 				const offsetY = Math.sin(angle) * offset;
 
-				console.log({ selectedPieceId });
 				return (
 					<div
 						key={piece.id}
